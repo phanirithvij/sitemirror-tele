@@ -112,7 +112,7 @@ if __name__ == '__main__':
     all_files = read_source(all_path)
 
     all_files = read_db(all_files)
-    for file in list(all_files.keys())[::-1]:
+    for file in all_files.keys():
         print(file, all_files[file])
         if not all_files[file][1]:
             # not done download
