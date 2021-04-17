@@ -112,6 +112,9 @@ if __name__ == '__main__':
     all_files = read_source(all_path)
 
     all_files = read_db(all_files)
+    all_files = read_dir(storage_path, all_files)
+    print(len(all_files.keys()), "files exist in db")
+
     numx = 0
     for file in all_files.keys():
         numx += 1
@@ -136,9 +139,7 @@ if __name__ == '__main__':
             
         if numx > 10:
             break
-    print(len(all_files.keys()), "files exist in db")
 
-    all_files = read_dir(storage_path, all_files)
     print(
         len(list(filter(
             lambda x: all_files[x][1] and all_files[x][2] is not None,
