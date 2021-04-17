@@ -52,7 +52,10 @@ def read_dir(path: Path, ret: dict):
             relative_path = os.path.relpath(parent/file, storage_path)
             if sys.platform == 'win32':
                 relative_path = relative_path.replace("\\", "/")
-            ret[relative_path] = [(parent/file).stat().st_size, True, None]
+            ret[relative_path][0] = (parent/file).stat().st_size
+            ret[relative_path][1] = True
+            if ret[relative_path][2] is not None:
+                ret[relative_path][2]
     return ret
 
 
