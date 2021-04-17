@@ -15,8 +15,8 @@ DELETE_LOCAL = True
 _dl_str = ""
 
 if DELETE_LOCAL:
-    _dl_str = ""
-    # _dl_str = "-d"
+    # _dl_str = ""
+    _dl_str = "-d"
 
 # commands
 DL_CMD = [
