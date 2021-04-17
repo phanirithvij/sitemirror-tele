@@ -3,6 +3,7 @@ import pickle
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 # todo read from config
 URL_ROOT = "https://the-eye.eu/public/Comics/DC%20Chronology/"
@@ -13,7 +14,8 @@ DELETE_LOCAL = True
 _dl_str = ""
 
 if DELETE_LOCAL:
-    _dl_str = "-d"
+    _dl_str = ""
+    # _dl_str = "-d"
 
 # commands
 DL_CMD = [
@@ -40,7 +42,7 @@ TELE_CMD = [
 
 def read_dir(path: Path, ret: dict):
     if not path.exists():
-        return
+        return ret
     for root, _, files in os.walk(path):
         for file in files:
             parent = Path(root, file).parent
@@ -51,27 +53,36 @@ def read_dir(path: Path, ret: dict):
             relative_path = os.path.relpath(parent/file, storage_path)
             if sys.platform == 'win32':
                 relative_path = relative_path.replace("\\", "/")
-            ret[relative_path] = (parent/file).stat().st_size
+            ret[relative_path] = ((parent/file).stat().st_size, True, None)
     return ret
 
 
 def tele_command(path: Path):
-    print(" ".join(TELE_CMD).format(path))
+    return " ".join(TELE_CMD).format(path)
 
-def read_source(path = "urls.txt"):
+
+def read_source(path="urls.txt"):
     path = Path(path)
+    ret = {}
     if not path.exists():
-        return {}
+        return ret
     with open(path, 'r') as f:
-        print(f.readlines()[-1].strip())
-    return {}
+        for lin in f.readlines():
+            url = unquote(lin.strip().replace("https://", ""))
+            if url[-1] == "/":
+                # not a file
+                continue
+            ret[url] = (-1, False, None)
+    return ret
 
 
-def read_db(dicter = {}):
+def read_db(dicter={}):
     if not db_path.exists():
         return dicter
     with open(db_path, 'rb') as db:
-        dicter = pickle.load(db)
+        odl = pickle.load(db)
+        for k, v in odl.items():
+            dicter[k] = v
         return dicter
 
 
@@ -103,12 +114,26 @@ if __name__ == '__main__':
 
     all_files = read_db(all_files)
     for file in all_files.keys():
-        print(file)
+        if not all_files[file][1]:
+            # not done download
+            # continue download
+            pass
+        elif all_files[file][2] is None:
+            # not uploaded
+            print(tele_command(file))
+            proc = subprocess.Popen(tele_command(file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+            out, err = proc.communicate()
+            print(out, err)
         break
-        print(subprocess.Popen(TELE_CMD, stdout=subprocess.PIPE))
     print(len(all_files.keys()), "files exist in db")
 
     all_files = read_dir(storage_path, all_files)
-    print(len(all_files.keys()), "files done")
+    print(
+        len(list(filter(
+            lambda x: all_files[x][1] and all_files[x][2] is not None,
+            list(all_files.keys())
+        ))),
+        "files done"
+    )
 
     save_db(all_files)
