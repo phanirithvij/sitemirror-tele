@@ -52,7 +52,7 @@ def read_dir(path: Path, ret: dict):
             relative_path = os.path.relpath(parent/file, storage_path)
             if sys.platform == 'win32':
                 relative_path = relative_path.replace("\\", "/")
-            ret[relative_path] = ((parent/file).stat().st_size, True, None)
+            ret[relative_path] = [(parent/file).stat().st_size, True, None]
     return ret
 
 
@@ -71,7 +71,7 @@ def read_source(path="urls.txt"):
             if url[-1] == "/":
                 # not a file
                 continue
-            ret[url] = (-1, False, None)
+            ret[url] = [-1, False, None]
     return ret
 
 
