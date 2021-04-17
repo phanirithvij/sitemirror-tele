@@ -123,7 +123,10 @@ if __name__ == '__main__':
             print(tele_command(storage_path/file))
             proc = subprocess.Popen(tele_command(storage_path/file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             out, err = proc.communicate()
-            print(out, err)
+            if err is None:
+                print(out.decode('utf-8').strip().split("file_id")[1][:-1].strip())
+            else:
+                print(err)
         break
     print(len(all_files.keys()), "files exist in db")
 
