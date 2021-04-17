@@ -58,7 +58,7 @@ def read_dir(path: Path, ret: dict):
 
 
 def tele_command(path: Path):
-    return " ".join(TELE_CMD).format(path)
+    return " ".join(TELE_CMD).format(str(path))
 
 
 def read_source(path="urls.txt"):
@@ -120,8 +120,8 @@ if __name__ == '__main__':
             pass
         elif all_files[file][2] is None:
             # not uploaded
-            print(tele_command(file))
-            proc = subprocess.Popen(tele_command(file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+            print(tele_command(storage_path/file))
+            proc = subprocess.Popen(tele_command(storage_path/file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             out, err = proc.communicate()
             print(out, err)
         break
