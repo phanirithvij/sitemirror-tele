@@ -73,7 +73,7 @@ def save_db(dictx):
 
 def setup():
     storage = "/root"
-    db_dest = "~/data.pkl"
+    db_dest = "data.pkl"
     if len(sys.argv) > 1:
         storage = sys.argv[1]
     if len(sys.argv) > 2:
