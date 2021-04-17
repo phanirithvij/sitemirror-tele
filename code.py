@@ -4,6 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
+from collections import OrderedDict
 
 # todo read from config
 URL_ROOT = "https://the-eye.eu/public/Comics/DC%20Chronology/"
@@ -39,7 +40,7 @@ TELE_CMD = [
 ]
 
 
-def read_dir(path: Path, ret: dict):
+def read_dir(path: Path, ret: OrderedDict):
     if not path.exists():
         return ret
     for root, _, files in os.walk(path):
@@ -65,7 +66,7 @@ def tele_command(path: Path):
 
 def read_source(path="urls.txt"):
     path = Path(path)
-    ret = {}
+    ret = OrderedDict()
     if not path.exists():
         return ret
     with open(path, 'r') as f:
@@ -78,7 +79,7 @@ def read_source(path="urls.txt"):
     return ret
 
 
-def read_db(dicter={}):
+def read_db(dicter):
     if not db_path.exists():
         return dicter
     with open(db_path, 'rb') as db:
