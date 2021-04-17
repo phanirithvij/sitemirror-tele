@@ -130,7 +130,7 @@ if __name__ == '__main__':
             else:
                 print(file)
                 print(err)
-                break
+        break
     print(len(all_files.keys()), "files exist in db")
 
     all_files = read_dir(storage_path, all_files)
