@@ -129,8 +129,9 @@ if __name__ == '__main__':
             proc = subprocess.Popen(tele_command(storage_path/file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             out, err = proc.communicate()
             if err is None:
-                fileid = out.decode('utf-8').strip().split("file_id")[1][:-1].strip()
-                all_files[file][2] = fileid
+                file_id = out.decode('utf-8').strip().split("file_id")[1][:-1].strip()
+                all_files[file][2] = file_id
+                print(file_id)
                 save_db(all_files)
                 break
             else:
