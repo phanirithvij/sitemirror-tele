@@ -1,0 +1,1 @@
+wget -m -np -c -U "eye02" -R "index.html*" "https://the-eye.eu/public/Comics/DC%20Chronology/" --progress=bar:noscroll -P /root
