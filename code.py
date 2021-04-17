@@ -1,7 +1,8 @@
 import os
+import pickle
+import subprocess
 import sys
 from pathlib import Path
-import pickle
 
 # todo read from config
 URL_ROOT = "https://the-eye.eu/public/Comics/DC%20Chronology/"
@@ -88,7 +89,10 @@ if __name__ == '__main__':
     print(storage_path, db_path)
 
     exist_files = read_db()
-    # print(exist_files)
+    for file in exist_files.keys():
+        print(file)
+        break
+        print(subprocess.Popen(TELE_CMD, stdout=subprocess.PIPE))
     print(len(exist_files.keys()), "files exist in db")
 
     done_files = read_dir(storage_path)
