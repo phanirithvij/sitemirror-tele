@@ -112,7 +112,9 @@ if __name__ == '__main__':
     all_files = read_source(all_path)
 
     all_files = read_db(all_files)
+    numx = 0
     for file in all_files.keys():
+        numx += 1
         print(file, all_files[file])
         if not all_files[file][1]:
             # not done download
@@ -127,10 +129,13 @@ if __name__ == '__main__':
                 fileid = out.decode('utf-8').strip().split("file_id")[1][:-1].strip()
                 all_files[file][2] = fileid
                 save_db(all_files)
+                break
             else:
                 print(file)
                 print(err)
-        break
+            
+        if numx > 10:
+            break
     print(len(all_files.keys()), "files exist in db")
 
     all_files = read_dir(storage_path, all_files)
