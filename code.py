@@ -131,28 +131,32 @@ if __name__ == '__main__':
             elif all_files[file][2] is None:
                 # not uploaded
                 print(tele_command(storage_path/file))
-                proc = subprocess.Popen(tele_command(storage_path/file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+                proc = subprocess.Popen(tele_command(
+                    storage_path/file), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
                 out, err = proc.communicate()
                 if err is None:
-                    file_id = out.decode('utf-8').strip().split("file_id")[1][:-1].strip()
+                    file_id = out.decode(
+                        'utf-8').strip().split("file_id")[1][:-1].strip()
                     all_files[file][2] = file_id
                     print(file, file_id)
                     print(file, file_id, file=of)
                     save_db(all_files)
-                    break
                 else:
                     print(file)
                     print(err)
-                
-            if numx > 10:
+
+            if numx > len(list(filter(
+                lambda x: all_files[x][1],
+                list(all_files.keys())
+            ))):
+                print(
+                    len(list(filter(
+                        lambda x: all_files[x][1],
+                        list(all_files.keys())
+                    ))),
+                    "files done"
+                )
                 break
 
-    print(
-        len(list(filter(
-            lambda x: all_files[x][1] and all_files[x][2] is not None,
-            list(all_files.keys())
-        ))),
-        "files done"
-    )
 
     save_db(all_files)
