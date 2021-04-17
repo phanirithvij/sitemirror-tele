@@ -38,8 +38,7 @@ TELE_CMD = [
 ]
 
 
-def read_dir(path: Path):
-    ret = {}
+def read_dir(path: Path, ret: dict):
     if not path.exists():
         return
     for root, _, files in os.walk(path):
@@ -59,12 +58,21 @@ def read_dir(path: Path):
 def tele_command(path: Path):
     print(" ".join(TELE_CMD).format(path))
 
-
-def read_db():
-    if not db_path.exists():
+def read_source(path = "urls.txt"):
+    path = Path(path)
+    if not path.exists():
         return {}
+    with open(path, 'r') as f:
+        print(f.readlines()[-1].strip())
+    return {}
+
+
+def read_db(dicter = {}):
+    if not db_path.exists():
+        return dicter
     with open(db_path, 'rb') as db:
-        return pickle.load(db)
+        dicter = pickle.load(db)
+        return dicter
 
 
 def save_db(dictx):
@@ -75,27 +83,32 @@ def save_db(dictx):
 def setup():
     storage = "/root"
     db_dest = "data.pkl"
+    all_path = "urls.txt"
     if len(sys.argv) > 1:
         storage = sys.argv[1]
     if len(sys.argv) > 2:
         db_dest = sys.argv[2]
+    if len(sys.argv) > 3:
+        all_path = sys.argv[3]
     storage_path = Path(storage)
     db_path = Path(db_dest)
-    return storage_path, db_path
+    return storage_path, db_path, Path(all_path)
 
 
 if __name__ == '__main__':
-    storage_path, db_path = setup()
-    print(storage_path, db_path)
+    storage_path, db_path, all_path = setup()
+    print(storage_path, db_path, all_path)
 
-    exist_files = read_db()
-    for file in exist_files.keys():
+    all_files = read_source(all_path)
+
+    all_files = read_db(all_files)
+    for file in all_files.keys():
         print(file)
         break
         print(subprocess.Popen(TELE_CMD, stdout=subprocess.PIPE))
-    print(len(exist_files.keys()), "files exist in db")
+    print(len(all_files.keys()), "files exist in db")
 
-    done_files = read_dir(storage_path)
-    print(len(done_files.keys()), "files done")
+    all_files = read_dir(storage_path, all_files)
+    print(len(all_files.keys()), "files done")
 
-    save_db(done_files)
+    save_db(all_files)
